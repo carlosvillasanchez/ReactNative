@@ -1,37 +1,44 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
+import { StyleSheet, View, Button,FlatList} from 'react-native';
+import TodoItem from './components/TodoItem';
+import TodoInput from './components/TodoInput';
 
 export default function App() {
-  let [enteredTodo, setEnteredTodo] = useState('')
   let [todos, setTodo] = useState([])
+  let [isAddMode, setAddMode] = useState(false)
 
-  function todoTextChange(enteredText){
-    setEnteredTodo(enteredText)
+
+  function addGoal(enteredTodo){
+    console.log(enteredTodo)
+    setTodo(todos => [...todos, {key: Math.random().toString(), value: enteredTodo}])
+    setAddMode(false)
   }
 
-  function addGoal(){
-    console.log(enteredTodo)
-    setTodo(todos => [...todos, enteredTodo])
-    setEnteredTodo("")
+  function deleteTodo(todoKey){
+    setTodo(todos => {
+      return todos.filter((todo) => todo.key !== todoKey)
+    })
+  }
+
+  function closeModal(){
+    setAddMode(false);
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput 
-          placeholder="Todo text!"
-          style={styles.input}
-          onChangeText={todoTextChange}
-          value={enteredTodo}/>
-        <Button title="Add" onPress={addGoal}/>
-      </View>
-      <ScrollView>
-        {todos.map((todo) => {
-          return(
-            <Text style={styles.todo} key={todo}>{todo}</Text>
-          );
-        })}
-      </ScrollView>
+      <Button title='Add new todo' onPress={() => setAddMode(true)}/>
+      <TodoInput 
+        onPress={addGoal} 
+        visible={isAddMode}
+        onCancel={closeModal}
+      />
+      <FlatList
+        data={todos}
+        renderItem={ItemData => <TodoItem 
+          onDelete={deleteTodo.bind(this, ItemData.item.key)}
+          title={ItemData.item.value}
+        />}
+      />
     </View>
   );
 }
@@ -39,22 +46,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     padding: 50
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  input: {
-    borderBottomColor: 'grey',
-    borderBottomWidth: 2,
-    width: '70%'
-  },
-  todo: {
-    padding: 10,
-    marginVertical: 10,
-    backgroundColor: "#ccc",
-    borderColor: 'black',
-    borderWidth: 1
   }
 });
