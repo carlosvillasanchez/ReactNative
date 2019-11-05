@@ -1,60 +1,57 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
 
-export default function App() {
-  let [enteredTodo, setEnteredTodo] = useState('')
-  let [todos, setTodo] = useState([])
+// Own components
+import Header from './components/complex/Header';
+import PreGameScreen from './screens/PreGameScreen';
+import GameScreen from './screens/GameScreen';
+import GameFinishedScreen from './screens/GameFinishedScreen';
 
-  function todoTextChange(enteredText){
-    setEnteredTodo(enteredText)
+// Constants
+import Colors from './constants/colors';
+
+
+
+export default function App() {
+  let [userNumber, setUserNumber] = useState()
+  let [numberOfRounds, setNumberOfRounds] = useState()
+
+  function startGameHadler(number){
+    setUserNumber(number);
   }
 
-  function addGoal(){
-    console.log(enteredTodo)
-    setTodo(todos => [...todos, enteredTodo])
-    setEnteredTodo("")
+  function gameOverHandler(rounds){
+    setNumberOfRounds(rounds);
+  }
+
+  function restartGameHadler(){
+    setNumberOfRounds(null);
+    setUserNumber(null);
+  }
+
+  let content = <PreGameScreen onStartGame={startGameHadler}/>;
+
+  if (userNumber) {
+    content = <GameScreen selectedNumber={userNumber} onGameOver={gameOverHandler}/>
+  }
+
+  if (numberOfRounds) {
+    content = <GameFinishedScreen roundsNumber={numberOfRounds} userNumber={userNumber} onRestart={restartGameHadler}/>
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput 
-          placeholder="Todo text!"
-          style={styles.input}
-          onChangeText={todoTextChange}
-          value={enteredTodo}/>
-        <Button title="Add" onPress={addGoal}/>
-      </View>
-      <ScrollView>
-        {todos.map((todo) => {
-          return(
-            <Text style={styles.todo} key={todo}>{todo}</Text>
-          );
-        })}
-      </ScrollView>
+      <Header title="Guess my number!"/>
+      {content}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 50
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: Colors.background,
+    height: '100%',
+    width: '100%',
     alignItems: 'center'
   },
-  input: {
-    borderBottomColor: 'grey',
-    borderBottomWidth: 2,
-    width: '70%'
-  },
-  todo: {
-    padding: 10,
-    marginVertical: 10,
-    backgroundColor: "#ccc",
-    borderColor: 'black',
-    borderWidth: 1
-  }
 });
