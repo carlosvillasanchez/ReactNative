@@ -12,6 +12,7 @@ import {
 import Card from '../components/simple/Card'
 import Input from '../components/simple/Input'
 import NumberContainer from '../components/complex/NumberContainer'
+import TitleText from '../components/simple/TitleText'
 
 import Colors from '../constants/colors';
 import DefaultStyles from '../constants/default-styles';
@@ -71,7 +72,7 @@ const GameScreen = props => {
 
     return (
         <View style={DefaultStyles.mainContainer}>
-            <Text>Guessing your number</Text>
+            <TitleText>Guessing your number</TitleText>
             <NumberContainer>{currentGuess}</NumberContainer>
             <Card style={styles.inputContainer}>
                 <View style={styles.buttonContainer}>
