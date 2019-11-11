@@ -5,12 +5,15 @@ import { AppLoading } from 'expo';
 
 // Own components
 import Header from './components/complex/Header';
-import PreGameScreen from './screens/PreGameScreen';
-import GameScreen from './screens/GameScreen';
-import GameFinishedScreen from './screens/GameFinishedScreen';
-
+import CategoriesScreen from './screens/CategoriesScreen';
+import CategoryMealsScreen from './screens/CategoryMealsScreen';
+import FavoritesScreen from './screens/FavoritesScreen';
+import FilterScreen from './screens/FilterScreen';
+import MealDetailScreen from './screens/MealDetailScreen';
 // Constants
 import Colors from './constants/colors';
+
+import MealsNavigator from './navigation/MealsNavigation'
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -21,8 +24,7 @@ const fetchFonts = () => {
 
 
 export default function App() {
-  let [userNumber, setUserNumber] = useState()
-  let [numberOfRounds, setNumberOfRounds] = useState()
+
   let [dataLoaded, setDataLoaded] = useState(false);
 
 
@@ -36,34 +38,10 @@ export default function App() {
     );
   }
 
-  function startGameHadler(number){
-    setUserNumber(number);
-  }
-
-  function gameOverHandler(rounds){
-    setNumberOfRounds(rounds);
-  }
-
-  function restartGameHadler(){
-    setNumberOfRounds(null);
-    setUserNumber(null);
-  }
-
-  let content = <PreGameScreen onStartGame={startGameHadler}/>;
-
-  if (userNumber) {
-    content = <GameScreen selectedNumber={userNumber} onGameOver={gameOverHandler}/>
-  }
-
-  if (numberOfRounds) {
-    content = <GameFinishedScreen roundsNumber={numberOfRounds} userNumber={userNumber} onRestart={restartGameHadler}/>
-  }
+  
 
   return (
-    <View style={styles.container}>
-      <Header title="Guess my number!"/>
-      {content}
-    </View>
+    <MealsNavigator/>
   );
 }
 
