@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+// IMPORTANT: This avobe functions can only be used inside react components, not in anyother "normal" JS function
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { MEALS } from '../data/dummy-data';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import CustomHeaderButton from '../components/simple/CustomHeaderButton'
 
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
+import { toggleFavorite } from '../store/actions/meals';
 
 const ListItem = props => {
     return <View style={styles.listItem}>
@@ -16,7 +18,30 @@ const ListItem = props => {
 
 const MealDetailScreen = props => {
     let mealId = props.navigation.getParam('mealId')
-    let selectedMeal = MEALS.find(meal => meal.id === mealId)
+    const allMeals = useSelector(state => state.meals.meals);
+
+    let selectedMeal = allMeals.find(meal => meal.id === mealId);
+
+    const dispatch = useDispatch(); // Object that has functions to dispatch new actions
+
+    const toggleFavoriteHandler = useCallback(() => {
+        dispatch(toggleFavorite(mealId));
+    }, [dispatch, mealId]);
+
+    useEffect(() => {
+        props.navigation.setParams({toggleFav: toggleFavoriteHandler})
+    }, [toggleFavoriteHandler]);
+
+    // IMPORTANT!
+    // The problem of this solution is that it executed when the component is fully rendered. Therefore, at the begining you will not see the title (1 sec)
+    // The solution is to send it in adance. In the previous component
+    // useEffect(() => {
+    //     // this does not ovewrite all params, just adds a new one (append), or changes if the tag already exists.
+    //     // This line alone will lead into an infinite loop, as it is chaning props, and so the component will re-render executing this line again.
+    //     // That is why we use useEffect
+    //     props.navigation.setParams({mealTitle: selectedMeal.title}) 
+    // }, [selectedMeal])
+
     console.log(Ionicons)
     return (
         <ScrollView>
@@ -48,19 +73,16 @@ const MealDetailScreen = props => {
 
 // It can be a function for dinamic configuration
 MealDetailScreen.navigationOptions = (navigationData) => {
-    let mealId = navigationData.navigation.getParam("mealId");
-    let selectedMeal = MEALS.find(meal => meal.id === mealId)
+    const toggleFav = navigationData.navigation.getParam('toggleFav')
 
     return {
-        headerTitle: selectedMeal.title,
+        headerTitle: navigationData.navigation.getParam('mealTitle'),
         headerRight: (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item
                     title="Favorite"
                     iconName="md-star"
-                    onPress={() => {
-                        console.log('Mark as favorite!');
-                    }}
+                    onPress={toggleFav}
                 />
             </HeaderButtons>
         )
@@ -87,7 +109,7 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 200
     },
-    listItem :{
+    listItem: {
         marginHorizontal: 20,
         marginVertical: 10,
         borderColor: "#ccc",

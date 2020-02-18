@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 import MealList from '../components/complex/MealList';
 import MealItem from '../components/complex/MealItem';
-import { MEALS } from '../data/dummy-data';
+
 
 const FavoritesScreen = props => {
+    
     function renderMealItem(itemData) {
         return (
             <MealItem
@@ -17,19 +19,20 @@ const FavoritesScreen = props => {
                     props.navigation.navigate({
                         routeName: 'MealDetail',
                         params: {
-                            mealId: itemData.item.id
+                            mealId: itemData.item.id,
+                            mealTitle: itemData.item.title,
                         }
                     });
                 }}
             />
         );
     }
-    let displayedMeals = MEALS.filter(
-        meal => true
-    );
+
+    const favoriteMeals = useSelector(state => state.meals.favoriteMeals);
+
     return (
         <MealList
-            displayedMeals={displayedMeals}
+            displayedMeals={favoriteMeals}
             renderMealItem={renderMealItem}
         />
     );
