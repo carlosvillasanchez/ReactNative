@@ -1,19 +1,28 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { CATEGORIES } from '../data/dummy-data';
-import CategoryMealsScreen from './CategoryMealsScreen';
-import Colors from '../constants/colors'
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/simple/CustomHeaderButton'
+
+// Components
+import CategoryGridTitle from '../components/complex/CategoryGridTitle'
+
 
 const CategoriesScreen = props => {
     const renderGridItem = (itemData) => {
         return (
-            <TouchableOpacity  style={styles.gridItem} onPress={() => {
-                props.navigation.navigate({ routeName: 'CategoryMeals' });
-            }}>
-                <View>
-                    <Text>{itemData.item.title}</Text>
-                </View>
-            </TouchableOpacity>
+            <CategoryGridTitle
+                title={itemData.item.title}
+                color={itemData.item.color}
+                onSelected={() => {
+                    props.navigation.navigate({
+                        routeName: 'CategoryMeals',
+                        params: {
+                            CategoryId: itemData.item.id
+                        }
+                    });
+                }}
+            />
         );
     }
 
@@ -25,28 +34,24 @@ const CategoriesScreen = props => {
             numColumns={2}
         />
     );
-};
+}; 
 
-CategoriesScreen.navigationOptions = {
-    headerTitle: 'Meals Categories',
-    headerStyle: {
-        backgroundColor: Colors.primary,
-    },
-    headerTintColor:  Colors.background
+CategoriesScreen.navigationOptions = navData => {
+    return {
+        headerTitle: 'Meals Categories',
+        headerLeft: (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title="Menu" iconName="ios-menu" onPress={() => {
+                    navData.navigation.toggleDrawer()
+                }} />
+            </HeaderButtons>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    gridItem: {
-        flex: 1,
-        margin: 15,
-        height: 150,
-        alignItems: 'center',
-        justifyContent: 'center'
+        overflow: "visible"
     }
 });
 

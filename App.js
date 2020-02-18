@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
+import { useScreens } from 'react-native-screens';
 
 // Own components
 import Header from './components/complex/Header';
@@ -13,7 +14,10 @@ import MealDetailScreen from './screens/MealDetailScreen';
 // Constants
 import Colors from './constants/colors';
 
-import MealsNavigator from './navigation/MealsNavigation'
+import MealsNavigator from './navigation/MealsNavigation';
+
+// For more efficiency
+useScreens();
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -38,10 +42,10 @@ export default function App() {
     );
   }
 
-  
+
 
   return (
-    <MealsNavigator/>
+    <MealsNavigator />
   );
 }
 
