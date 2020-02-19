@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Switch, Platform } from 'react-native';
+import { useDispatch } from "react-redux";  
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/simple/CustomHeaderButton'
 
 import Colors from "../constants/colors";
+
+import { setFilters } from '../store/actions/meals'
 
 const FilterSwitch = props => {
     return (
@@ -27,16 +30,18 @@ const FilterScreen = props => {
     const [isVegan, setVegan] = useState(false);
     const [isVegetarian, setVegetarian] = useState(false);
 
+    const dispatch = useDispatch();
+
     // useCallback makes sure that the function is only recreated if its dependencies changes
     const saveFilters = useCallback(() => {
         const filtersToSave = {
-            glutenFree: isGlutenFree,
-            lactoseFree: isLactoseFree,
-            vegan: isVegan,
-            vegetarian: isVegetarian,
+            isGlutenFree: isGlutenFree,
+            isLactoseFree: isLactoseFree,
+            isVegan: isVegan,
+            isVegetarian: isVegetarian,
         }
-        console.log(filtersToSave)
-    }, [isVegetarian, isVegan, isLactoseFree, isGlutenFree]);
+        dispatch(setFilters(filtersToSave));
+    }, [isVegetarian, isVegan, isLactoseFree, isGlutenFree, dispatch]);
 
     // This function runs whenever the state changes or the component rerenders
     useEffect(() => {

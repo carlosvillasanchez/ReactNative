@@ -19,6 +19,9 @@ const ListItem = props => {
 const MealDetailScreen = props => {
     let mealId = props.navigation.getParam('mealId')
     const allMeals = useSelector(state => state.meals.meals);
+    const currentMealIsFavorite = useSelector(state =>
+        state.meals.favoriteMeals.some(meal => meal.id === mealId)
+    );
 
     let selectedMeal = allMeals.find(meal => meal.id === mealId);
 
@@ -31,6 +34,10 @@ const MealDetailScreen = props => {
     useEffect(() => {
         props.navigation.setParams({toggleFav: toggleFavoriteHandler})
     }, [toggleFavoriteHandler]);
+
+    useEffect(() => {
+        props.navigation.setParams({isFav: currentMealIsFavorite});
+    }, [currentMealIsFavorite]);
 
     // IMPORTANT!
     // The problem of this solution is that it executed when the component is fully rendered. Therefore, at the begining you will not see the title (1 sec)
@@ -73,15 +80,15 @@ const MealDetailScreen = props => {
 
 // It can be a function for dinamic configuration
 MealDetailScreen.navigationOptions = (navigationData) => {
-    const toggleFav = navigationData.navigation.getParam('toggleFav')
-
+    const toggleFav = navigationData.navigation.getParam('toggleFav');
+    const isFav = navigationData.navigation.getParam('isFav');
     return {
         headerTitle: navigationData.navigation.getParam('mealTitle'),
         headerRight: (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item
                     title="Favorite"
-                    iconName="md-star"
+                    iconName={isFav ? "ios-star" : "ios-star-outline"}
                     onPress={toggleFav}
                 />
             </HeaderButtons>

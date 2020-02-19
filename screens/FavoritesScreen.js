@@ -1,13 +1,17 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useSelector } from 'react-redux';
 import MealList from '../components/complex/MealList';
 import MealItem from '../components/complex/MealItem';
+import BodyText from '../components/simple/BodyText';
 
 
 const FavoritesScreen = props => {
-    
+    const favoriteMeals = useSelector(state => state.meals.favoriteMeals);
+
     function renderMealItem(itemData) {
+        
+        const isFav = favoriteMeals.some(meal => meal.id === itemData.item.id)
         return (
             <MealItem
                 title={itemData.item.title}
@@ -21,6 +25,7 @@ const FavoritesScreen = props => {
                         params: {
                             mealId: itemData.item.id,
                             mealTitle: itemData.item.title,
+                            isFav: isFav,
                         }
                     });
                 }}
@@ -28,8 +33,11 @@ const FavoritesScreen = props => {
         );
     }
 
-    const favoriteMeals = useSelector(state => state.meals.favoriteMeals);
-
+    if (!favoriteMeals || favoriteMeals.length === 0) {
+        return <View style={styles.noFav}>
+            <BodyText>Yo have no favorite meals, so far...</BodyText>
+        </View>
+    }
     return (
         <MealList
             displayedMeals={favoriteMeals}
@@ -44,6 +52,14 @@ FavoritesScreen.navigationOptions = (navigationData) => {
         headerTitle: "Favorites",
     }
 }
+
+const styles = StyleSheet.create({
+    noFav: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    }
+});
 
 
 export default FavoritesScreen;
