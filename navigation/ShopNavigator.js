@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation'
 
 import AllProductsScreen from '../screens/shop/AllProductsScreen';
+import ProductsDetailScreen from '../screens/shop/ProductsDetailsScreen';
 
 import Colors from '../constants/Colors'
 import { Provider } from 'react-redux';
@@ -11,7 +12,8 @@ import { Provider } from 'react-redux';
 
 // Main Screen
 const ProductsNavigator = createStackNavigator({
-    AllProducts: AllProductsScreen
+    AllProducts: AllProductsScreen,
+    ProductDetail: ProductsDetailScreen,
 }, {
     defaultNavigationOptions: {
         headerStyle: {
