@@ -15,7 +15,6 @@ const ProductDetailsScreen = props => {
                 <Button color={Colors.primary} title="Add to char" />
             </View>
             <View style={styles.detailsContainer}>
-                <Text style={styles.title}>{selectedProduct.title}</Text>
                 <Text style={styles.price}>{selectedProduct.price} €</Text>
                 <Text style={styles.description}>{selectedProduct.description}</Text>
             </View>
@@ -42,8 +41,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginHorizontal: 20,
     },
-    title: {
-        fontSize: 18
+    price: {
+        fontFamily: 'open-sans'
+    },
+    description: { 
+        fontFamily: 'open-sans'
     }
 
 
